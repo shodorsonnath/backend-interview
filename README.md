@@ -56,7 +56,7 @@ docker compose up -d   # optional local Postgres
 
 npm install
 npx prisma migrate deploy
-npm run db:seed
+SEED_ADMIN_EMAIL=test@gmail.com SEED_ADMIN_PASSWORD=your-demo-password npm run db:seed
 npm run dev
 ```
 
@@ -65,12 +65,14 @@ Health: `GET /api/health`
 
 ### Demo admin (from seed)
 
-| Field    | Default                      |
-|----------|------------------------------|
-| Email    | `admin@doctortracker.local`  |
-| Password | `Admin123!`                  |
+Set `SEED_ADMIN_EMAIL` (default `test@gmail.com`) and **`SEED_ADMIN_PASSWORD`** only when running `npm run db:seed`. The password is hashed in the database and must not be committed.
 
-Override with `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` in `.env`.
+## Deploy (Vercel)
+
+1. Create a **Neon** (or other) PostgreSQL database and set `DATABASE_URL`.
+2. Set `SESSION_SECRET` (≥16 chars), `NODE_ENV=production`, and `CORS_ORIGIN` to your frontend URL (e.g. `https://your-app.vercel.app`).
+3. Deploy this repo as a Vercel project (`vercel.json` runs `prisma migrate deploy` on build).
+4. Run seed once from a trusted machine with `DATABASE_URL` and `SEED_ADMIN_*` — do not store `SEED_ADMIN_PASSWORD` in Vercel env.
 
 ### Scripts
 

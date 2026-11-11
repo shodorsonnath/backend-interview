@@ -35,8 +35,11 @@ function daysAgo(n: number): Date {
 }
 
 async function main() {
-  const email = process.env.SEED_ADMIN_EMAIL ?? "admin@doctortracker.local";
-  const password = process.env.SEED_ADMIN_PASSWORD ?? "Admin123!";
+  const email = process.env.SEED_ADMIN_EMAIL ?? "test@gmail.com";
+  const password = process.env.SEED_ADMIN_PASSWORD;
+  if (!password) {
+    throw new Error("SEED_ADMIN_PASSWORD must be set when running the seed.");
+  }
   const hash = await bcrypt.hash(password, 12);
 
   await prisma.admin.upsert({
