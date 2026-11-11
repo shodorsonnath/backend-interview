@@ -20,6 +20,14 @@ export function createApp() {
   app.use(express.json());
   app.use(cookieParser());
 
+  app.get("/", (_req, res) => {
+    res.json({
+      name: "Doctor Tracker API",
+      health: "/api/health",
+      docs: "Use the Next.js frontend; API routes are under /api.",
+    });
+  });
+
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok", service: "doctor-tracker-api", timestamp: new Date().toISOString() });
   });
