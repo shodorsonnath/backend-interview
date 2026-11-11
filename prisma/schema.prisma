@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  adminId   String
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([adminId])
+  @@index([expiresAt])
+}
+
+model Doctor {
+  id              String    @id @default(cuid())
+  name            String
+  specialization  String
+  hospital        String
+  phone           String
+  email           String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  patients        Patient[]
+
+  @@index([specialization])
+  @@index([createdAt])
+  @@index([name])
+}
+
+model Patient {
+  id        String   @id @default(cuid())
+  fullName  String
+  condition String
+  doctorId  String
+  doctor    Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([doctorId])
+  @@index([condition])
+  @@index([createdAt])
+  @@index([fullName])
+}
